@@ -7,7 +7,7 @@ import { OK } from 'http-status-codes';
 import { Response, SuperTest, Test } from 'supertest';
 
 import app from '../src/Server';
-import { pErr } from '../src/shared/functions';
+import { pErr } from '../src/utils/functions';
 
 
 describe('Users Routes', () => {

@@ -3,7 +3,7 @@ import { BAD_REQUEST, CREATED, OK } from 'http-status-codes';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { getConnection } from "typeorm";
 import { User } from "../entities/User";
-import { paramMissingError } from '../shared/constants';
+import { paramMissingError } from '../utils/constants';
 
 // Init shared
 const router = Router();
@@ -13,12 +13,12 @@ const router = Router();
  *                      Get All Users - "GET /api/users/all"
  ******************************************************************************/
 
-router.get('/all', async (req: Request, res: Response) => {
-    const users = await getConnection()
-        .getRepository(User)
-        .createQueryBuilder("user")
-        .getMany();
-    return res.status(OK).json({users});
+router.get('*', async (req: Request, res: Response) => {
+    // const users = await getConnection()
+    //     .getRepository(User)
+    //     .createQueryBuilder("user")
+    //     .getMany();
+    return res.status(OK).end();
 });
 
 /******************************************************************************

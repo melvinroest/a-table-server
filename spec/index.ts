@@ -1,7 +1,7 @@
 import find from 'find';
 import Jasmine from 'jasmine';
 import dotenv from 'dotenv';
-import logger from '../src/shared/Logger';
+import logger from '../src/utils/Logger';
 import commandLineArgs from 'command-line-args';
 
 // Set the env file
