@@ -12,11 +12,13 @@ import { convertToNumber } from "shared/utils/typeFunctions"
 const router = Router();
 
 router.get('/useranalytics/all', async (req: Request, res: Response) => {
-  const allUserAnalytics = await getConnection()
+  const data = await getConnection()
     .getRepository(UserAnalytics)
     .createQueryBuilder("user_analytics")
     .getMany();
-  return res.status(OK).end();
+  return res.status(OK).json({
+    data,
+  });
 });
 
 router.post('/useranalytics/upload', async (req: Request, res: Response) => {
@@ -83,7 +85,7 @@ router.put('/useranalytics/update', async (req: Request, res: Response) => {
     return res.status(OK).end();
 });
 
-router.delete('/useranalytics/delete/:id', async (req: Request, res: Response) => {
+router.delete('/useranalytics/delete/', async (req: Request, res: Response) => {
     const { id } = req.params as ParamsDictionary;
     await getConnection()
         .createQueryBuilder()
