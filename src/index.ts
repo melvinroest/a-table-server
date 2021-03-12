@@ -5,8 +5,6 @@ import { intializeDB } from './db';
 import { initializeCache } from './db';
 import { toSnakeCase } from "shared/utils/stringTransform";
 
-console.log(toSnakeCase("hELLO WORLD"));
-
 intializeDB();
 
 const redisPORT = Number(process.env.REDIS_PORT || 6379)
