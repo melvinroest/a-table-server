@@ -1,23 +1,32 @@
 version: "3"
 
 services:
-  postgres_on_docker:
+  redis_miro:
+    image: redis:6.2.1
+    container_name: redis_miro_container
+    networks:
+      - miro_net
+    env_file:
+      - .env
+    ports:
+      - 6380:6380
+    command: redis-server --port 6380
+
+  postgres_miro:
     networks:
       - miro_net
     image: postgres:13.1
-    container_name: postgres_container
+    container_name: postgres_miro_container
     ports:
       - ${TYPEORM_PORT}:${TYPEORM_PORT}
     environment:
-      TYPEORM_PASSWORD: ${TYPEORM_PASSWORD}
-      TYPEORM_USERNAME: ${TYPEORM_USERNAME}
-      TYPEORM_DATABASE: ${TYPEORM_DATABASE}
+      POSTGRES_PASSWORD: ${TYPEORM_PASSWORD}
+      POSTGRES_USER: ${TYPEORM_USERNAME}
+      POSTGRES_DB: ${TYPEORM_DATABASE}
     volumes:
       - ${DB_DATA_DIR}:/var/lib/postgresql/data
     env_file:
       - .env
-
-  # TODO: need to add REDIS
 
   miro_table_server:
     environment:
@@ -35,18 +44,22 @@ services:
     networks:
       - miro_net
     build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - .:/app
-      - ./node_modules:/app/node_modules
+      context: ../
+      dockerfile: ./server/Dockerfile
+    # volumes:
+    #   - ./server/:/app/
+    #   - ./server/node_modules:/app/node_modules
     depends_on:
-      - postgres_on_docker
-    links:
-      - postgres_on_docker
+      - postgres_miro
+      - redis_miro
+    # links:
+    #   - postgres_miro
+    #   - redis_miro
     image: miro_table_server:0.0.1
     container_name: miro_table_server_container
-    command: yarn run dev:watch
+    command: yarn run start:dev
+    ports:
+      - 5001:5001 # for debug purposes
 
 networks:
   miro_net:

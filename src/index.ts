@@ -12,5 +12,5 @@ initializeCache(redisPORT);
 
 const port = Number(process.env.PORT || 5001);
 app.listen(port, () => {
-    logger.info('Express server started on port: ' + port);
+    logger.info('Express server started on port: ' + port + ' redis port is: ' + redisPORT);
 });

@@ -45,7 +45,6 @@ router.get('/useranalytics/all/hash', async (req: Request, res: Response) => {
   const data = await getConnection()
     .getRepository(UserAnalytics)
     .createQueryBuilder("user_analytics")
-    .select(["user_analytics.id"])
     .getMany()
     .catch(x => console.log(x));
   
@@ -74,10 +73,10 @@ router.post('/useranalytics/upload', async (req: Request, res: Response) => {
   } = req.body;
   const data = Buffer.from(base64Csv, 'base64').toString('binary');
   const options: Papa.ParseConfig = {
-      delimiter: ",",
-      quoteChar: '"',
-      header: true
-    }
+    delimiter: ",",
+    quoteChar: '"',
+    header: true
+  };
   const parsedCsv = Papa.parse(data, options);
   const userAnalytics = parsedCsv.data;
 
@@ -123,6 +122,7 @@ router.post('/useranalytics/upload', async (req: Request, res: Response) => {
       dbValuesContainer.push(dbItem);
     }
   }
+
   catch (e) {
     console.log(e);
     return res.status(BAD_REQUEST).send(`Error: something went wrong with converting the data. Error message: ${e}`);

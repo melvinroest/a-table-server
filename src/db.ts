@@ -13,8 +13,8 @@ export async function intializeDB(): Promise<void> {
 export function initializeCache(port: number | undefined) : unknown {
   const tedis = new Tedis({
     port: port,
-    host: "127.0.0.1"
+    host: process.env.REDIS_HOST || "127.0.0.1"
   });
-  logger.info('Redis cache successfully initialized');
+  logger.info('Redis cache successfully initialized with port: ' + port);
   return tedis;
 }
