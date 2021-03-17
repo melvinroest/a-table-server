@@ -1,0 +1,53 @@
+version: "3"
+
+services:
+  postgres_on_docker:
+    networks:
+      - miro_net
+    image: postgres:13.1
+    container_name: postgres_container
+    ports:
+      - ${TYPEORM_PORT}:${TYPEORM_PORT}
+    environment:
+      TYPEORM_PASSWORD: ${TYPEORM_PASSWORD}
+      TYPEORM_USERNAME: ${TYPEORM_USERNAME}
+      TYPEORM_DATABASE: ${TYPEORM_DATABASE}
+    volumes:
+      - ${DB_DATA_DIR}:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  # TODO: need to add REDIS
+
+  miro_table_server:
+    environment:
+      TYPEORM_CONNECTION: ${TYPEORM_CONNECTION}
+      TYPEORM_HOST: ${TYPEORM_HOST}
+      TYPEORM_USERNAME: ${TYPEORM_USERNAME}
+      TYPEORM_PASSWORD: ${TYPEORM_PASSWORD}
+      TYPEORM_DATABASE: ${TYPEORM_DATABASE}
+      TYPEORM_PORT: ${TYPEORM_PORT}
+      TYPEORM_ENTITIES: ${TYPEORM_ENTITIES}
+      TYPEORM_SYNCHRONIZE: ${TYPEORM_SYNCHRONIZE}
+      TYPEORM_LOGGING: ${TYPEORM_LOGGING}
+    env_file:
+      - .env # Note: other names won't work unless you change the docker-compose command itself
+    networks:
+      - miro_net
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      - ./node_modules:/app/node_modules
+    depends_on:
+      - postgres_on_docker
+    links:
+      - postgres_on_docker
+    image: miro_table_server:0.0.1
+    container_name: miro_table_server_container
+    command: yarn run dev:watch
+
+networks:
+  miro_net:
+    name: miro_net
