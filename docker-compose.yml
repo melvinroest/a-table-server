@@ -52,9 +52,6 @@ services:
     depends_on:
       - postgres_miro
       - redis_miro
-    # links:
-    #   - postgres_miro
-    #   - redis_miro
     image: miro_table_server:0.0.1
     container_name: miro_table_server_container
     command: yarn run start:dev
